@@ -1,11 +1,15 @@
-import { useState } from 'react'
+import DataCard from "./Components/DataCard.jsx";
+import './index.css'
+import Header from "./Components/Header.jsx";
+import CustomQueryCard from "./Components/CustomQueryCard.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
-    <div>
-      <h1>Test</h1>
+    <div className="appDiv">
+        <Header />
+        <DataCard />
+        <CustomQueryCard />
     </div>
   )
 }

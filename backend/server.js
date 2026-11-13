@@ -8,14 +8,11 @@ const { SQL_USER } = process.env;
 const { SQL_PASSWORD } = process.env;
 
 const connection = await mysql2.createConnection({
-    host: "cpagames.mysql.database.azure.com",
+    host: "localhost",
     user: SQL_USER,
     password: SQL_PASSWORD,
-    database: "game_lab",
+    database: "GameTest",
     port: 3306,
-    ssl: {
-        rejectUnauthorized: true,
-    }
 })
 
 connection.connect((error) => {
@@ -40,7 +37,23 @@ app.get("/", (req, res) => {
     res.send("Server is Live!");
 })
 
-app.get("/data", async (req, res) => {
-    const [rows] = await connection.query('SELECT * FROM games');
-    res.json(rows);
+app.get("/data", async (request, response) => {
+    const [rows] = await connection.query('SELECT g.game_name, t.game_type, g.game_info FROM Games g JOIN Game_Types t ON t.type_id = g.type_id; ');
+    response.json(rows);
+})
+
+app.get("/favouritegames", async (request, response) => {
+    const [rows] = await connection.query('SELECT p.full_name, g.game_name, f.hours_played FROM Favourite_Game f JOIN Players p ON p.player_id = f.player_id JOIN Games g ON g.game_id = f.game_id;');
+    response.json(rows);
+})
+
+app.get("/data/:query", async (request, response) => {
+    const { query } = request.params;
+    try {
+        const [rows] = await connection.query(query);
+        response.json(rows);
+    } catch (error) {
+        console.log(error);
+        response.status(501).send(error);
+    }
 })

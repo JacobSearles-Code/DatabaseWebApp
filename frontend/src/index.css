@@ -1,0 +1,51 @@
+body {
+    margin-top: 100px;
+}
+
+.appDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.allGameDiv {
+    text-align: center;
+}
+
+.allGameHead {
+    text-align: left;
+}
+
+.allGameTable {
+    text-align: left;
+    border: 4px solid black;
+    border-collapse: collapse;
+    width: auto;
+    margin: auto;
+}
+
+.allGameTable th {
+    padding: 10px;
+}
+
+.allGameTable tr:hover {
+    background-color: lightblue;
+}
+
+.allGameTable td {
+    padding: 10px;
+    border: 2px solid black;
+}
+
+.webHeader {
+    display: flex;
+    flex-direction: row;
+    background-color: aquamarine;
+    width: 100%;
+    height: 100px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    align-items: center;
+    justify-content: center;
+}
