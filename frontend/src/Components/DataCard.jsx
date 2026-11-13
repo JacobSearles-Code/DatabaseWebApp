@@ -3,23 +3,44 @@ import {useEffect, useState} from "react";
 
 function DataCard() {
     const [data, setData] = useState([]);
-    const [favData, setFavData] = useState([]);
+    const [gamePage, setGamePage] = useState(1);
+    const [gamePagination, setGamePagination] = useState({});
 
     const handleOnLoad = async () => {
         try {
             const result = await axios.get("http://localhost:3000/data");
-            setData(result.data);
-
-            const favResult = await axios.get("http://localhost:3000/favouritegames");
-            setFavData(favResult.data);
+            setData(result.data.rows);
         } catch (error) {
             console.log(error);
         }
     }
 
+    // Handle original Loading of data
     useEffect( () => {
         handleOnLoad();
     }, [])
+
+    // Fetch normal games table
+    useEffect(() => {
+        const fetchGames = async () => {
+            try {
+                const result = await axios.get("http://localhost:3000/data", {
+                    params: {
+                        page: gamePage,
+                        pageSize: 5
+                    }
+                });
+
+                setData(result.data.rows);
+                setGamePagination(result.data.pagination);
+
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        fetchGames();
+    }, [gamePage]);
 
     return (
         <div className="allGameDiv">
@@ -35,32 +56,18 @@ function DataCard() {
                 <tbody>
             {data.map((game) => (
                 <tr key={game.game_id}>
-                    <td>{game.game_name}</td>
-                    <td>{game.game_type}</td>
-                    <td>{game.game_info}</td>
+                    <td>{game.title}</td>
+                    <td>{game.type_name}</td>
+                    <td>{game.about}</td>
                 </tr>
             ))}
                 </tbody>
             </table>
-            <h1>Favourite Games Table</h1>
-            <table className="allGameTable">
-                <thead>
-                    <tr>
-                        <th className="allGameHead">Person Name</th>
-                        <th className="allGameHead">Favourite Game</th>
-                        <th className="allGameHead">Hours Played</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {favData.map((favourites) => (
-                    <tr key={favourites.game_id}>
-                        <td>{favourites.full_name}</td>
-                        <td>{favourites.game_name}</td>
-                        <td>{favourites.hours_played}</td>
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+            <div className="pagination">
+                <button onClick={() => setGamePage(gamePage - 1)} disabled={gamePage === 1}>Previous</button>
+                <span>Page {gamePagination.page} of {gamePagination.totalPages}</span>
+                <button onClick={() => setGamePage(gamePage + 1)} disabled={gamePage === gamePagination.totalPages}>Next</button>
+            </div>
         </div>
     )
 }
