@@ -27,7 +27,7 @@ function DataCard() {
                 setGamePagination(result.data.pagination);
 
             } catch (error) {
-                setError(error.response?.data?.sqlMessage || "Something went wrong");
+                setError(error.response?.data?.message || "Something went wrong");
             }
         };
 
